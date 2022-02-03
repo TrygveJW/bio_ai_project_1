@@ -8,6 +8,14 @@ from LinReg import LinReg
 import numpy as np
 from numpy import genfromtxt
 
+def _p_box(disp_str):
+    print()
+    str_len = len(disp_str)
+    x_s = max(20,str_len)
+    f_s = "## {:^"+str(x_s)+"} ##"
+    print("#"*(x_s+6))
+    print(f_s.format(disp_str))
+    print("#" * (x_s + 6))
 
 def calculate_entropy(population: [str]):
     count = [0 for _ in range(len(population[0]))]
@@ -226,14 +234,16 @@ crossover_rate = 0.2
 mutation_rate = 0.1
 target_range = (0,128)
 
-# # task e
-# end_pop, hist, _ = simple_genetic_algorithm_sine(population_size,crossover_rate,mutation_rate,num_generations=50,target_range=target_range)
-# display_sin_pop_(end_pop, hist)
-#
-# # task f
-# target_range = (5,10)
-# end_pop, hist = simple_genetic_algorithm_sine(population_size,crossover_rate,mutation_rate,num_generations=10,target_range=target_range)
-# display_sin_pop_(end_pop, hist)
+# task e
+_p_box("task e: sine SGA")
+end_pop, hist, _ = simple_genetic_algorithm_sine(population_size,crossover_rate,mutation_rate,num_generations=50,target_range=target_range)
+display_sin_pop_(end_pop, hist)
+
+# task f
+_p_box("task f: sine SGA target (5,10)")
+target_range = (5,10)
+end_pop, hist, _ = simple_genetic_algorithm_sine(population_size,crossover_rate,mutation_rate,num_generations=10,target_range=target_range)
+display_sin_pop_(end_pop, hist)
 
 '''
 g) Run the genetic algorithm on the provided dataset. Show the results, and
@@ -315,10 +325,9 @@ population_size = 40
 crossover_rate = 0.3
 mutation_rate = 0.03
 
-# end_pop , hist, best_gene, _ = simple_genetic_algorithm_lin_reg(population_size,crossover_rate,mutation_rate,num_generations=40)
-# display_reg_pop(end_pop, hist )
-
-
+_p_box("task f: f-select SGA target")
+end_pop , hist, best_gene, _ = simple_genetic_algorithm_lin_reg(population_size,crossover_rate,mutation_rate,num_generations=40)
+display_reg_pop(end_pop, hist)
 
 '''
 h) Implement a new survivor selection function. This function should be using a
@@ -396,21 +405,30 @@ mutation_rate = 0.03
 generations_to_run=100
 
 
-# end_pop , hist, best_gene, entropy_lin_old = simple_genetic_algorithm_lin_reg(population_size,crossover_rate,mutation_rate,num_generations=generations_to_run)
-# display_reg_pop(end_pop, hist )
+_p_box("task g: survivor selection with crowding")
 
-end_pop , hist, best_gene, entropy_lin_new = simple_genetic_algorithm_lin_reg(population_size,crossover_rate,mutation_rate,num_generations=generations_to_run, selection_function=crowding_based_survivor_function)
-# display_reg_pop(end_pop, hist )
-# plot_entropy_comparison(entropy_lin_old,entropy_lin_new)
+print("\n## Sine SGA with crowding")
+end_pop, hist, entropy_new = simple_genetic_algorithm_sine(population_size,crossover_rate,mutation_rate,num_generations=generations_to_run,target_range=target_range, selection_function=crowding_based_survivor_function)
+# display_sin_pop_(end_pop, hist)
+
+print("\n## Sine SGA without crowding")
+end_pop, hist, entropy = simple_genetic_algorithm_sine(population_size,crossover_rate,mutation_rate,num_generations=generations_to_run,target_range=target_range)
+# display_sin_pop_(end_pop, hist)
+plot_entropy_comparison(entropy,entropy_new)
 
 
 population_size = 5
 crossover_rate = 0.2
 mutation_rate = 0.5
 generations_to_run=100
+print("\n## F-select SGA with crowding")
+end_pop , hist, best_gene, entropy_lin_new = simple_genetic_algorithm_lin_reg(population_size,crossover_rate,mutation_rate,num_generations=generations_to_run, selection_function=crowding_based_survivor_function)
+# display_reg_pop(end_pop, hist )
 
-end_pop, hist, entropy = simple_genetic_algorithm_sine(population_size,crossover_rate,mutation_rate,num_generations=generations_to_run,target_range=target_range)
-# display_sin_pop_(end_pop, hist)
-end_pop, hist, entropy_new = simple_genetic_algorithm_sine(population_size,crossover_rate,mutation_rate,num_generations=generations_to_run,target_range=target_range, selection_function=crowding_based_survivor_function)
-# display_sin_pop_(end_pop, hist)
-# plot_entropy_comparison(entropy,entropy_new)
+print("\n## F-select SGA without crowding")
+end_pop , hist, best_gene, entropy_lin_old = simple_genetic_algorithm_lin_reg(population_size,crossover_rate,mutation_rate,num_generations=generations_to_run)
+# display_reg_pop(end_pop, hist )
+plot_entropy_comparison(entropy_lin_old,entropy_lin_new)
+
+
+
